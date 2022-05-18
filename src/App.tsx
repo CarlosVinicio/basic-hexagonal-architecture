@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {Basket} from "./domain/models/Basket";
+import {Product} from "./domain/models/Product";
+import {basketService} from "./domain/services/Basket.service";
+import {ProductList} from "./infrastructure/components/Products/ProductList";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+type AppProps = {
+  msg: string
 }
 
-export default App;
+const App: React.FC<AppProps> = ({ msg }) => {
+  const [basket, setBasket] = React.useState<Basket|null>(null)
+
+  const handleAddToCart = (product: Product) => {
+    setBasket(basketService.addProductToBasket(product))
+  }
+
+  return (
+      <div className="App">
+        <h1>{msg}</h1>
+        <ProductList onSelectProduct={handleAddToCart}/>
+        { basket && <p>Items on basket: {basket.items.length}</p>}
+      </div>
+  )
+}
+
+export default App
